@@ -15,14 +15,16 @@ Including another URLconf
 """
 from django.urls import include, path
 from django.contrib import admin
-from .views import UserProfileView
+# from .views import UserProfileView
 from rest_framework import routers
 from django.views.generic import TemplateView
 from django.conf.urls import url
+# from .views import UserProfileView
 
 
 urlpatterns = [
-    path('',UserProfileView.as_view({'get': 'list'}),name="user_profile"),
+    # path('',UserProfileView.as_view({'get': 'list'}),name="user_profile"),
+    # path('userdetails/',UserProfileView)
 
 
 ]

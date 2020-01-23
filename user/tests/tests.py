@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 
+# App
+from user.models import UserProfile
 
 # Third Party
 from rest_framework.test import APIClient
@@ -198,8 +200,9 @@ class UserView(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Token "+self.token.key)
 
     def test_profile_list_authentication(self):
-        client = RequestsClient()
-        response = client.get("http://127.0.0.1:8000//rest-auth/user/1")
+        user=User.objects.create_user(username='peter',password='Madasipeter')
+        print("/rest-auth/user/{}".format(user.id))
+        response = self.client.get("/rest-auth/user/")
         self.assertEqual(response.status_code,200)
 
     def test_profile_list_unauthentication(self):
@@ -213,3 +216,25 @@ class UserView(APITestCase):
         user.is_active=True
         user.save()
 
+class TestProfile(APITestCase):
+    def setUp(self):
+        super().setUp()
+        self.profile_list_url = reverse('user-api:profile-list')
+
+    def test_user_profile_url_exists(self):
+        self.assertEqual(self.profile_list_url, '/api/v1/user/profile/')
+
+    def test_get_user_profile_list_ok(self):
+        response = self.client.get(self.profile_list_url)
+        self.assertEqual(response.json(), [])
+
+    def test_get_user_profile_list(self):
+        user = User.objects.create_user(username='peter',password='Madasipeter')
+        profile = UserProfile.objects.create(user=user)
+
+        response = self.client.get(self.profile_list_url)
+        self.assertEqual(len(response.json()), 1)
+
+        profile_detail_url = reverse('user-api:profile-detail', args=[profile.id])
+        response = self.client.get(profile_detail_url)
+        print(profile_detail_url, response.json())

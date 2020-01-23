@@ -3,6 +3,21 @@ from rest_framework import serializers
 from user.models import UserProfile  
 from rest_auth.serializers import UserDetailsSerializer
 
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = "__all__"
+        depth = 1
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['profile_user'] = {
+            'id': instance.user.id
+        }
+        # import ipdb; ipdb.set_trace()
+        return data
+
+
 class UserSerializer(serializers.ModelSerializer):
 
     #phone = serializer.PhoneNumberField(source="user.phone")

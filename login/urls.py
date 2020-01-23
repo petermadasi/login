@@ -16,6 +16,7 @@ Including another URLconf
 from django.urls import include, path
 from django.contrib import admin
 from user import views
+from user.views import login_view
 from rest_framework import routers
 
 
@@ -23,5 +24,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('rest-auth/', include('rest_auth.urls')),
     path('rest-auth/registration/', include('rest_auth.registration.urls'), name='rest-registration'),
-    path('userprofile/', include('user.urls'))
+    path('userprofile/', include('user.urls')),
+    path('userdetails/',include('user.urls')),
+    path('login/',login_view),
+
+    path('api/v1/user/',include('user.api.urls', namespace='user-api')),
 ]
